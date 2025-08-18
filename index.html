@@ -44,6 +44,14 @@
     .nav a.link:hover{color:var(--ink); text-shadow:var(--glow)}
     .cta{padding:10px 16px; border-radius:999px; background:#0f0f0f; border:1px solid rgba(255,255,255,.15); color:var(--ink); text-decoration:none; font-weight:700}
     .cta:hover{box-shadow:var(--glow)}
+    
+    /* Mobile Menu */
+    .desktop-links{display:flex; align-items:center; gap:24px;}
+    .menu-toggle{display:none; background:none; border:none; color:var(--ink); font-size:24px; cursor:pointer; padding:4px}
+    .mobile-menu{display:none; flex-direction:column; background:rgba(15,15,15,.95); backdrop-filter:blur(var(--blur)); padding:16px; border-bottom:1px solid rgba(255,255,255,.06)}
+    .mobile-menu a.link{padding:12px 16px; border-bottom:1px solid rgba(255,255,255,.06)}
+    .mobile-menu a.link:last-child{border-bottom:none}
+    .mobile-menu.active{display:flex}
 
     /* Hero */
     .hero{position:relative; overflow:hidden; border-bottom:1px solid rgba(255,255,255,.06)}
@@ -111,8 +119,57 @@
     footer{border-top:1px solid rgba(255,255,255,.06); padding:28px 20px; color:var(--muted); text-align:center}
 
     /* Responsive */
-    @media (max-width:1024px){ .grid{grid-template-columns:repeat(2,1fr)} }
-    @media (max-width:960px){ .hero__grid{grid-template-columns:1fr} .catgrid{grid-template-columns:repeat(2,1fr)} .stores,.testi{grid-template-columns:1fr} .grid{grid-template-columns:1fr} }
+    @media (max-width:1024px){ 
+      .grid{grid-template-columns:repeat(2,1fr)} 
+    }
+    
+    @media (max-width:960px){ 
+      .hero__grid{grid-template-columns:1fr} 
+      .catgrid{grid-template-columns:repeat(2,1fr)} 
+      .stores,.testi{grid-template-columns:1fr} 
+      .grid{grid-template-columns:1fr} 
+      .nav__in{gap:16px; padding:12px 16px}
+      form{grid-template-columns:1fr}
+    }
+    
+    @media (max-width:768px){
+      .wrap{padding:40px 16px}
+      .hero__grid{padding:60px 16px 40px}
+      .headline{font-size:clamp(32px,5vw,48px)}
+      .catgrid{grid-template-columns:repeat(2,1fr); gap:10px}
+      .tile img{height:140px}
+      .swiper{padding:4px}
+      .prod img{height:260px}
+      .card img{height:220px}
+      .prod{padding:16px}
+      .testi__card{padding:16px}
+      .contact__grid{gap:20px}
+      .footer{padding:30px 16px}
+      .footer__grid{gap:20px}
+    }
+    
+    @media (max-width:640px){
+      .nav__in{gap:10px}
+      .desktop-links{display:none}
+      .menu-toggle{display:block}
+      .brand__name{font-size:14px}
+      .hero__img{height:320px}
+      .btns{flex-direction:column; width:100%}
+      .btn{text-align:center}
+      .catgrid{grid-template-columns:1fr}
+      .tile img{height:180px}
+      .cta{padding:8px 12px; font-size:14px}
+      .headline{font-size:clamp(28px,5vw,36px)}
+      .subhead{font-size:16px}
+    }
+    
+    @media (max-width:480px){
+      .hero__grid{padding:40px 16px 30px}
+      .hero__img{height:260px}
+      .prod img{height:220px}
+      .card img{height:180px}
+      .swiper-slide{padding:8px}
+    }
   </style>
 </head>
 <body>
@@ -124,13 +181,24 @@
         <div class="brand__name">GATH बंधन</div>
       </a>
       <div class="spacer"></div>
+      <div class="desktop-links">
+        <a class="link" href="#shop">Shop</a>
+        <a class="link" href="#lookbook">Lookbook</a>
+        <a class="link" href="#products">Products</a>
+        <a class="link" href="#about">About</a>
+        <a class="link" href="#stores">Stores</a>
+        <a class="link" href="#contact">Contact</a>
+      </div>
+      <a class="cta" href="https://wa.me/911206385489" target="_blank"><i class="ri-whatsapp-line"></i> WhatsApp</a>
+      <button class="menu-toggle" aria-label="Toggle menu"><i class="ri-menu-line"></i></button>
+    </div>
+    <div class="mobile-menu">
       <a class="link" href="#shop">Shop</a>
       <a class="link" href="#lookbook">Lookbook</a>
       <a class="link" href="#products">Products</a>
       <a class="link" href="#about">About</a>
       <a class="link" href="#stores">Stores</a>
       <a class="link" href="#contact">Contact</a>
-      <a class="cta" href="https://wa.me/911206385489" target="_blank"><i class="ri-whatsapp-line"></i> WhatsApp</a>
     </div>
   </div>
 
@@ -300,6 +368,24 @@
     // Smooth scroll (Lenis)
     const lenis = new Lenis();
     function raf(t){ lenis.raf(t); requestAnimationFrame(raf) } requestAnimationFrame(raf);
+    
+    // Mobile Menu Toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('active');
+      });
+      
+      // Close mobile menu when clicking on links
+      const mobileLinks = mobileMenu.querySelectorAll('a.link');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('active');
+        });
+      });
+    }
 
     // Build Lookbook from first item in each category
     const lbEl = document.getElementById('lookbookSlides');
