@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GATH बंधन — Modern Ethnic Wear</title>
+  
+  <!-- Swiper (modern carousel) -->
+  <link rel="stylesheet" href="https://unpkg.com/swiper@11/swiper-bundle.min.css" />
+  <!-- Icons -->
+  <link href="https://unpkg.com/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root{
+      --bg:#0b0b0b;
+      --panel:#111;
+      --ink:#f2f2f2;
+      --muted:#bdbdbd;
+      --accent:#ffffff; /* white core for glow */
+      --glow:0 0 25px rgba(255,255,255,.25), 0 0 60px rgba(255,255,255,.15);
+      --radius:18px;
+      --blur:14px;
+      --maxw:1200px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      line-height:1.55; letter-spacing:.2px;
+      overflow-x:hidden;
+    }
+
+    /* Top Nav */
+    .nav{ position:sticky; top:0; z-index:50; backdrop-filter:saturate(130%) blur(var(--blur)); background:linear-gradient(180deg, rgba(15,15,15,.85), rgba(15,15,15,.6)); border-bottom:1px solid rgba(255,255,255,.06); }
+    .nav__in{max-width:var(--maxw); margin:auto; display:flex; align-items:center; gap:24px; padding:14px 20px}
+    .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--ink)}
+    .brand__logo{width:38px; height:38px; border-radius:50%; background:radial-gradient(circle at 30% 30%, #fff, #cfcfcf 40%, #111 70%); box-shadow:var(--glow)}
+    .brand__name{font-family:"Playfair Display", serif; font-weight:800; letter-spacing:.5px}
+    .spacer{flex:1}
+    .nav a.link{color:var(--muted); text-decoration:none; font-weight:600}
+    .nav a.link:hover{color:var(--ink); text-shadow:var(--glow)}
+    .cta{padding:10px 16px; border-radius:999px; background:#0f0f0f; border:1px solid rgba(255,255,255,.15); color:var(--ink); text-decoration:none; font-weight:700}
+    .cta:hover{box-shadow:var(--glow)}
+
+    /* Hero */
+    .hero{position:relative; overflow:hidden; border-bottom:1px solid rgba(255,255,255,.06)}
+    .hero__grid{max-width:var(--maxw); margin:0 auto; padding:92px 20px 72px; display:grid; grid-template-columns:1.2fr .8fr; gap:30px}
+    .headline{font-family:"Playfair Display", serif; font-size:clamp(36px,6vw,66px); line-height:1.05; margin:0}
+    .sub{color:var(--muted); margin:16px 0 22px}
+    .btns{display:flex; gap:12px; flex-wrap:wrap}
+    .btn{padding:12px 18px; border-radius:999px; border:1px solid rgba(255,255,255,.15); background:#0f0f0f; color:var(--ink); text-decoration:none; font-weight:700}
+    .btn:hover{box-shadow:var(--glow)}
+    .hero__card{background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:14px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
+    .hero__img{width:100%; height:420px; object-fit:cover; border-radius:14px; filter:grayscale(100%)}
+    .noise{position:absolute; inset:-1px; background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140"><filter id="n"><feTurbulence baseFrequency="0.7" numOctaves="2" stitchTiles="stitch" type="fractalNoise"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity=".035"/></svg>'); pointer-events:none}
+
+    /* Section wrapper */
+    .wrap{max-width:var(--maxw); margin:0 auto; padding:64px 20px}
+    .section-title{font-size:28px; margin:0 0 18px; display:flex; align-items:center; gap:10px}
+    .section-title i{opacity:.5}
+
+    /* Categories */
+    .catgrid{display:grid;grid-template-columns:repeat(5,minmax(160px,1fr));gap:14px}
+    .tile{position:relative;overflow:hidden;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:#101010;color:var(--ink)}
+    .tile img{width:100%;height:160px;object-fit:cover;filter:grayscale(100%) contrast(90%);transition:.5s ease}
+    .tile:hover img{filter:grayscale(0%)}
+    .tile .label{position:absolute;left:10px;bottom:10px;padding:6px 10px;background:rgba(15,15,15,.75);border:1px solid rgba(255,255,255,.1);border-radius:999px;backdrop-filter:blur(6px);font-weight:700}
+
+
+    /* Carousel */
+    .swiper{width:100%; padding:8px}
+    .swiper-slide{background:#0f0f0f; border:1px solid rgba(255,255,255,.08); border-radius:16px; overflow:hidden}
+    .prod{display:flex; flex-direction:column}
+    .prod img{width:100%; height:320px; object-fit:cover; filter:grayscale(100%)}
+    .prod .meta{padding:12px 14px}
+    .prod .meta h4{margin:0 0 6px}
+    .prod .meta p{margin:0; color:var(--muted)}
+    .prod:hover img{filter:grayscale(0%)}
+
+    /* Product Grid */
+    .toolbar{display:flex; align-items:center; gap:10px; margin-bottom:10px}
+    .grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:14px}
+    .card{background:#0f0f0f; border:1px solid rgba(255,255,255,.08); border-radius:16px; overflow:hidden}
+    .card img{width:100%; height:260px; object-fit:cover; filter:grayscale(100%)}
+    .card:hover img{filter:grayscale(0%)}
+    .card .meta{padding:12px 14px}
+    .chip{font-size:12px; color:var(--muted)}
+
+    /* Stores */
+    .stores{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+    .store{background:#0f0f0f; border:1px solid rgba(255,255,255,.08); border-radius:16px; overflow:hidden}
+    .store img{width:100%; height:200px; object-fit:cover; filter:grayscale(100%)}
+    .store:hover img{filter:grayscale(0%)}
+    .store .meta{padding:12px 14px}
+
+    /* Testimonials */
+    .testi{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+    .q{background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:18px}
+    .q .name{margin-top:10px; color:var(--muted)}
+
+    /* Contact */
+    form{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    form input, form textarea{ background:#0f0f0f; border:1px solid rgba(255,255,255,.1); color:var(--ink); border-radius:12px; padding:12px; outline:none }
+    form textarea{grid-column:1/-1; min-height:120px; resize:vertical}
+    .submit{justify-self:start}
+
+    /* Footer */
+    footer{border-top:1px solid rgba(255,255,255,.06); padding:28px 20px; color:var(--muted); text-align:center}
+
+    /* Responsive */
+    @media (max-width:1024px){ .grid{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:960px){ .hero__grid{grid-template-columns:1fr} .catgrid{grid-template-columns:repeat(2,1fr)} .stores,.testi{grid-template-columns:1fr} .grid{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <div class="nav">
+    <div class="nav__in">
+      <a class="brand" href="#top">
+        <div class="brand__logo"></div>
+        <div class="brand__name">GATH बंधन</div>
+      </a>
+      <div class="spacer"></div>
+      <a class="link" href="#shop">Shop</a>
+      <a class="link" href="#lookbook">Lookbook</a>
+      <a class="link" href="#products">Products</a>
+      <a class="link" href="#about">About</a>
+      <a class="link" href="#stores">Stores</a>
+      <a class="link" href="#contact">Contact</a>
+      <a class="cta" href="https://wa.me/911206385489" target="_blank"><i class="ri-whatsapp-line"></i> WhatsApp</a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section id="top" class="hero">
+    <div class="hero__grid">
+      <div>
+        <h1 class="headline split">Fabric → Ethnic, all in one step.</h1>
+        <p class="sub">Entrepreneur-run Indian retailer for premium fabrics and ready-to-wear sherwanis, kurtas, bandhgalas, blazers & Indo‑Westerns. Minimal. Modern. Made to be worn.</p>
+        <div class="btns">
+          <a class="btn" href="#shop"><i class="ri-store-2-line"></i> Shop Collections</a>
+          <a class="btn" href="#products"><i class="ri-t-shirt-2-line"></i> Browse Products</a>
+        </div>
+      </div>
+      <div class="hero__card">
+        <img class="hero__img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwcUIP2XCZIic3MUiJiFQsr3bGLEOtCLCfquKvQW-vA5LDJzMwy4mOXn_F&s=10" alt="Royal Maroon Sherwani" />
+      </div>
+    </div>
+    <div class="noise"></div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section id="shop" class="wrap">
+    <h2 class="section-title"><i class="ri-grid-line"></i> Shop by Category</h2>
+    <div class="catgrid">
+      <a class="tile" href="#blazers"><img src="https://5.imimg.com/data5/ANDROID/Default/2023/1/TC/CZ/HQ/43239049/product-jpeg.jpg" alt="Blazers"/><span class="label">Blazers</span></a>
+      <a class="tile" href="#indo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbYLFaJM_PBQtOntPR6FkQjamSBNr_1zUAxvwycHuhdZ3ruuqO6gf5iAy9&s=10" alt="Indo Westerns"/><span class="label">Indo Westerns</span></a>
+      <a class="tile" href="#sherwani"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYV-9TWYnUe-mts4KRARfIcxrJqWAczDqSriXJuCRJ-_I0Px4Zevx_35I&s=10" alt="Sherwani"/><span class="label">Sherwanis</span></a>
+      <a class="tile" href="#kurtas"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj7vVxBAuJyJF3AcEHtg64XCi_R2cRqx8Rzp5Mjk_XkrEC0BxUvMtMOzs&s=10" alt="Kurtas"/><span class="label">Kurtas</span></a>
+      <a class="tile" href="#bandhgalas"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0Cu1tIkc7TdmjZHfN-G-u4yNjf1mxDqS71cEqUf7H9ytdCQK-Q4BoDkg&s=10" alt="Bandhgalas"/><span class="label">Bandhgalas</span></a>
+    </div>
+  </section>
+
+  <!-- LOOKBOOK / FEATURED (autofilled from catalog) -->
+  <section id="lookbook" class="wrap">
+    <h2 class="section-title"><i class="ri-star-smile-line"></i> Featured Looks</h2>
+    <div class="swiper looks">
+      <div class="swiper-wrapper" id="lookbookSlides"></div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS (autofilled) -->
+  <section id="products" class="wrap">
+    <h2 class="section-title"><i class="ri-t-shirt-2-line"></i> Products</h2>
+    <div class="toolbar">
+      <label for="filter">Filter:</label>
+      <select id="filter">
+        <option value="all">All</option>
+        <option value="Sherwanis">Sherwanis</option>
+        <option value="Kurtas">Kurtas</option>
+        <option value="Bandhgalas">Bandhgalas</option>
+        <option value="Blazers">Blazers</option>
+        <option value="Indo-Westerns">Indo-Westerns</option>
+      </select>
+    </div>
+    <div class="grid" id="productGrid"></div>
+  </section>
+
+  <!-- ABOUT / PROCESS -->
+  <section id="about" class="wrap">
+    <h2 class="section-title"><i class="ri-information-line"></i> About</h2>
+    <p>GATH बंधन (Gathbandhan) — Entrepreneur-led Indian clothing & shopping retailer. We take you end‑to‑end: from curated premium fabrics to precision tailoring to ready‑to‑wear elegance.</p>
+    <div class="testi" style="margin-top:12px">
+      <div class="q"><strong>1. Curate</strong><br/>Premium fabrics sourced from trusted mills.</div>
+      <div class="q"><strong>2. Design</strong><br/>Modern Indian sensibility—minimal yet expressive.</div>
+      <div class="q"><strong>3. Craft</strong><br/>Precision tailoring & thoughtful finishing.</div>
+      <div class="q"><strong>4. Style</strong><br/>In‑store fit for effortless, ready‑to‑wear elegance.</div>
+    </div>
+  </section>
+
+  <!-- STORES -->
+  <section id="stores" class="wrap">
+    <h2 class="section-title"><i class="ri-map-pin-line"></i> Stores</h2>
+    <div class="stores">
+      <div class="store">
+        <img src="https://files.lbb.in/media/2020/01/5e1435463c06fc78e30fb3c8_1578382662643.jpg" alt="GIP Mall" />
+        <div class="meta">
+          <h3>GIP Mall (Greater Noida)</h3>
+          <p>Address: Placeholder address, GIP Mall, Greater Noida</p>
+          <p>Hours: Mon–Sun: 11:00–21:00 · Phone: +91 120 638 5489</p>
+        </div>
+      </div>
+      <div class="store">
+        <img src="https://www.omaxe.com/projectgallery/gallery_1671098836196.jpg" alt="OCP Mall" />
+        <div class="meta">
+          <h3>OCP Mall (Greater Noida)</h3>
+          <p>Address: Placeholder address, OCP Mall, Greater Noida</p>
+          <p>Hours: Mon–Sun: 11:00–21:00 · Phone: +91 120 638 5489</p>
+        </div>
+      </div>
+      <div class="store">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0Cu1tIkc7TdmjZHfN-G-u4yNjf1mxDqS71cEqUf7H9ytdCQK-Q4BoDkg&s=10" alt="South Ex" />
+        <div class="meta">
+          <h3>G-14 South Ex (Delhi)</h3>
+          <p>Address: Placeholder address, G-14, South Extension, New Delhi</p>
+          <p>Hours: Mon–Sun: 11:00–21:00 · Phone: +91 120 638 5489</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="wrap">
+    <h2 class="section-title"><i class="ri-chat-quote-line"></i> What clients say</h2>
+    <div class="testi">
+      <div class="q">“Impeccable tailoring—felt regal at my reception.”<div class="name">— A. Mehra · ★★★★★</div></div>
+      <div class="q">“Beautiful fabrics and super helpful staff.”<div class="name">— S. Gupta · ★★★★★</div></div>
+      <div class="q">“Loved the Indo Western fits—modern yet rooted.”<div class="name">— R. Iyer · ★★★★☆</div></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="wrap">
+    <h2 class="section-title"><i class="ri-customer-service-2-line"></i> Contact</h2>
+    <p>Phone: +91 120 638 5489 · Instagram: @gathbandhanethnic_official · WhatsApp quick chat below.</p>
+    <form onsubmit="event.preventDefault(); alert('Thanks! We\'ll get back within 24 hours.');">
+      <input type="text" placeholder="Your Name" required />
+      <input type="email" placeholder="Your Email" required />
+      <textarea placeholder="Your Message" required></textarea>
+      <a class="btn submit" href="https://wa.me/911206385489" target="_blank"><i class="ri-whatsapp-line"></i> WhatsApp Us</a>
+      <button class="btn submit" type="submit">Send Message</button>
+    </form>
+  </section>
+
+  <footer>
+    © 2025 GATH बंधन · Privacy Policy · Terms & Conditions
+  </footer>
+
+  <!-- LIBS -->
+  <script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.0.43/dist/lenis.min.js"></script>
+  <script src="https://unpkg.com/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/split-type"></script>
+
+  <!-- CATALOG (single source of truth) -->
+  <script>
+    const catalog = {
+      categories: {
+        "Sherwanis": [
+          { name: "Royal Maroon Sherwani", material: "Raw Silk", occasion: "Wedding", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwcUIP2XCZIic3MUiJiFQsr3bGLEOtCLCfquKvQW-vA5LDJzMwy4mOXn_F&s=10" },
+          { name: "Emerald Sherwani", material: "Velvet", occasion: "Wedding", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmfLNr84x_qmHd8M627osy_ZXQNFV2Efv8qdx37EkRIme-IoJrpC69kySL&s=10" }
+        ],
+        "Kurtas": [
+          { name: "Saffron Kurta Set", material: "Cotton Silk", occasion: "Festive", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi-NwSEl1gwniMK0ssgJb_h4XpO91_QpD458pi4vHWUulnJNbrc8byuic&s=10" },
+          { name: "Textured Ivory Kurta", material: "Khadi", occasion: "Casual", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTixlNVV5RyVWuMk1nNgXs3ga2RSUjAjVtpUidCpgQroT1tOT87X76GI3bd&s=10" },
+          { name: "Minimal Black Kurta", material: "Cotton", occasion: "Casual", img: "https://valintaformens.com/cdn/shop/products/photo_2023-03-27_02-27-21.jpg?v=1681723151&width=360" }
+        ],
+        "Bandhgalas": [
+          { name: "Navy Bandhgala", material: "Tweed", occasion: "Reception", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC8nId1DYR9vs6fhUmpSssTFRtyYzRMxRQlqUP-hkkfJD4ArLweyvgKMA&s=10" },
+          { name: "Textured Bandhgala", material: "Wool", occasion: "Evening", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0Cu1tIkc7TdmjZHfN-G-u4yNjf1mxDqS71cEqUf7H9ytdCQK-Q4BoDkg&s=10" }
+        ],
+        "Blazers": [
+          { name: "Royal Blue Blazer", material: "Wool Blend", occasion: "Evening", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFKlwIgjiIc--Z2JyRlHObRFMHZ81TeGtjIXe8Z9L8WFz-ecFBM5vl0_Re&s=10" }
+        ],
+        "Indo-Westerns": [
+          { name: "Heritage Indo Western", material: "Brocade", occasion: "Sangeet", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3eugLRgu5F16MBqYj-5elEjzI3QzIs-63hTO_-dqeCk_ulCE-W4vdjsAB&s=10" },
+          { name: "Saffron Indo Western", material: "Silk", occasion: "Festive", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi-NwSEl1gwniMK0ssgJb_h4XpO91_QpD458pi4vHWUulnJNbrc8byuic&s=10" }
+        ]
+      }
+    };
+  </script>
+
+  <!-- FX & INIT -->
+  <script>
+    // Smooth scroll (Lenis)
+    const lenis = new Lenis();
+    function raf(t){ lenis.raf(t); requestAnimationFrame(raf) } requestAnimationFrame(raf);
+
+    // Build Lookbook from first item in each category
+    const lbEl = document.getElementById('lookbookSlides');
+    const lbSlides = [];
+    Object.entries(catalog.categories).forEach(([cat, items])=>{
+      items.forEach(({name, material, occasion, img})=>{
+        lbSlides.push(`<div class=\"swiper-slide\"><div class=\"prod\"><img src=\"${img}\" alt=\"${name}\"><div class=\"meta\"><h4>${name}</h4><p>${material} · ${occasion}</p></div></div></div>`);
+      });
+    });
+    lbEl.innerHTML = lbSlides.join('');
+
+    // Swiper carousel
+    const looks = new Swiper('.looks', {
+      slidesPerView: 1.2,
+      spaceBetween: 12,
+      centeredSlides: true,
+      loop: true,
+      breakpoints:{768:{slidesPerView:2.2},1024:{slidesPerView:3.2}},
+      pagination: { el: '.swiper-pagination', clickable: true }
+    });
+
+    // Build Product Grid
+    const grid = document.getElementById('productGrid');
+    const filter = document.getElementById('filter');
+
+    function renderProducts(sel='all'){
+      const cards = [];
+      Object.entries(catalog.categories).forEach(([cat, items])=>{
+        if(sel !== 'all' && sel !== cat) return;
+        items.forEach(({name, material, occasion, img})=>{
+          cards.push(`<div class=\"card\"><img src=\"${img}\" alt=\"${name}\"><div class=\"meta\"><h4>${name}</h4><div class=\"chip\">${cat} · ${material} · ${occasion}</div></div></div>`);
+        });
+      });
+      grid.innerHTML = cards.join('');
+    }
+    renderProducts();
+    filter.addEventListener('change', (e)=> renderProducts(e.target.value));
+
+    // Split + GSAP reveal
+    const split = new SplitType('.split', { types: 'words, chars' });
+    gsap.from(split.chars, { yPercent: 120, opacity: 0, stagger: 0.02, duration: 0.8, ease: 'power3.out' });
+
+    // Scroll reveals
+    gsap.utils.toArray('.wrap, .store, .q, .tile, .prod, .card').forEach(el=>{
+      gsap.from(el, { scrollTrigger:{ trigger: el, start: 'top 85%' }, y:20, opacity:0, duration:.6, ease:'power2.out'});
+    });
+
+    // Hover glow for interactive elements
+    document.querySelectorAll('.tile, .btn, .card, .store, .prod').forEach(el=>{
+      el.addEventListener('pointerenter', ()=> el.style.boxShadow = 'var(--glow)');
+      el.addEventListener('pointerleave', ()=> el.style.boxShadow = 'none');
+    });
+  </script>
+</body>
+</html>
