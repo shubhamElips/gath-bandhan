@@ -149,6 +149,169 @@
       transform: scale(1);
     }
     
+    /* Payment Dialog Styles */
+    .payment-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+    
+    .payment-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .payment-dialog {
+      background: #111;
+      border-radius: 24px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+      padding: 30px;
+      box-shadow: var(--glow), 0 0 40px rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transform: scale(0.95);
+      transition: transform 0.3s;
+      position: relative;
+    }
+    
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .payment-dialog::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .payment-overlay.active .payment-dialog {
+      transform: scale(1);
+    }
+    
+    .payment-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--ink);
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 10;
+    }
+    
+    .payment-title {
+      font-family: "Playfair Display", serif;
+      font-size: 24px;
+      margin: 0 0 20px;
+      text-align: center;
+    }
+    
+    .payment-qr {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 20px;
+      background: white;
+      padding: 10px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+    
+    .payment-qr img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    
+    .payment-info {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .payment-amount {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    
+    .payment-items {
+      margin-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 20px;
+    }
+    
+    .cart-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .cart-item-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    
+    .cart-item-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .cart-item-info {
+      flex: 1;
+    }
+    
+    .cart-item-name {
+      font-weight: bold;
+      margin: 0 0 5px;
+    }
+    
+    .cart-item-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0;
+    }
+    
+    .cart-item-price {
+      font-weight: bold;
+      margin-right: 15px;
+    }
+    
+    .cart-item-remove {
+      background: none;
+      border: none;
+      color: #ff4d4d;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 5px;
+    }
+    
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
     .add-to-cart-btn {
       background: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.2);
@@ -627,6 +790,34 @@
   
   <!-- Cart Animation Element -->
   <div class="cart-animation"></div>
+  
+  <!-- Payment Dialog -->
+  <div class="payment-overlay">
+    <div class="payment-dialog">
+      <button class="payment-close"><i class="ri-close-line"></i></button>
+      <h2 class="payment-title">Complete Your Payment</h2>
+      
+      <div class="payment-info">
+        <div class="payment-qr">
+          <img src="Assets/qr.png" alt="Payment QR Code">
+        </div>
+        <p>Scan the QR code to complete your payment</p>
+        <div class="payment-amount">₹0</div>
+      </div>
+      
+      <div class="payment-items">
+        <h3>Items in your cart</h3>
+        <div class="cart-items-list">
+          <!-- Cart items will be populated here -->
+        </div>
+        
+        <div class="cart-total">
+          <span>Total Amount</span>
+          <span class="total-amount">₹0</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <footer>
     © 2025 GATH बंधन · Privacy Policy · Terms & Conditions
@@ -670,11 +861,18 @@
   <!-- FX & INIT -->
   <script>
     // Smooth scroll (Lenis)
-    const lenis = new Lenis();
+// Lenis is already declared later in the code, so we can remove this duplicate declaration
     function raf(t){ lenis.raf(t); requestAnimationFrame(raf) } requestAnimationFrame(raf);
     
     // Initialize cart
-    let cart = [];
+    const paymentOverlay = document.querySelector('.payment-overlay');
+    const paymentClose = document.querySelector('.payment-close');
+    const cartItemsList = document.querySelector('.cart-items-list');
+    const totalAmountEl = document.querySelector('.total-amount');
+    const paymentAmountEl = document.querySelector('.payment-amount');
+    
+    // Load cart from local storage
+    let cart = JSON.parse(localStorage.getItem('gathBandhanCart')) || [];
     const cartCount = document.querySelector('.cart-count');
     const cartIcon = document.querySelector('.cart-icon');
     const itemDetailPage = document.querySelector('.item-detail-page');
@@ -688,10 +886,30 @@
       } else {
         cartCount.classList.remove('active');
       }
+      
+      // Save cart to local storage
+      localStorage.setItem('gathBandhanCart', JSON.stringify(cart));
+    }
+    
+    // Calculate total amount
+    function calculateTotal() {
+      return cart.reduce((total, item) => {
+        // Generate a consistent price based on the product name
+        const price = (item.name.length * 100) + 2000;
+        return total + (price * item.quantity);
+      }, 0);
+    }
+    
+    // Format price as Indian Rupees
+    function formatPrice(price) {
+      return '₹' + price.toLocaleString('en-IN');
     }
     
     // Add to cart function
     function addToCart(product, quantity = 1) {
+      // Generate a consistent price based on the product name
+      const price = (product.name.length * 100) + 2000;
+      
       const existingItem = cart.find(item => 
         item.name === product.name && 
         item.category === product.category
@@ -702,12 +920,20 @@
       } else {
         cart.push({
           ...product,
+          price: price,
           quantity: quantity
         });
       }
       
       updateCartCount();
       animateAddToCart(event);
+    }
+    
+    // Remove from cart function
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartCount();
+      renderCartItems();
     }
     
     // Cart animation
@@ -870,9 +1096,72 @@
       }
     });
     
+    // Render cart items in payment dialog
+    function renderCartItems() {
+      cartItemsList.innerHTML = '';
+      
+      if (cart.length === 0) {
+        cartItemsList.innerHTML = '<p>Your cart is empty</p>';
+        totalAmountEl.textContent = '₹0';
+        paymentAmountEl.textContent = '₹0';
+        return;
+      }
+      
+      cart.forEach((item, index) => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'cart-item';
+        
+        // Generate a consistent price based on the product name if not already set
+        const price = item.price || (item.name.length * 100) + 2000;
+        
+        itemEl.innerHTML = `
+          <div class="cart-item-img">
+            <img src="${item.img}" alt="${item.name}">
+          </div>
+          <div class="cart-item-info">
+            <h4 class="cart-item-name">${item.name}</h4>
+            <p class="cart-item-meta">${item.category} · ${item.material} · Qty: ${item.quantity}</p>
+          </div>
+          <div class="cart-item-price">${formatPrice(price * item.quantity)}</div>
+          <button class="cart-item-remove" data-index="${index}"><i class="ri-delete-bin-line"></i></button>
+        `;
+        
+        cartItemsList.appendChild(itemEl);
+      });
+      
+      // Add event listeners to remove buttons
+      document.querySelectorAll('.cart-item-remove').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const index = parseInt(e.currentTarget.dataset.index);
+          removeFromCart(index);
+        });
+      });
+      
+      // Update total amount
+      const total = calculateTotal();
+      totalAmountEl.textContent = formatPrice(total);
+      paymentAmountEl.textContent = formatPrice(total);
+    }
+    
     // Cart icon click event
     cartIcon.addEventListener('click', () => {
-      alert('Cart: ' + cart.map(item => `${item.name} (${item.quantity})`).join(', ') || 'Your cart is empty');
+      renderCartItems();
+      paymentOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+    
+    // Close payment dialog
+    paymentClose.addEventListener('click', () => {
+      paymentOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+    
+    // Close payment dialog when clicking outside
+    paymentOverlay.addEventListener('click', (e) => {
+      if (e.target === paymentOverlay) {
+        paymentOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
     });
     
     // Smooth scroll (Lenis)
